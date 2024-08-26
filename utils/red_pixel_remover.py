@@ -18,8 +18,8 @@ if __name__ == "__main__":
         print("The image must have an alpha channel.")
         exit(1)
 
-    red_pixels = img[..., 2] >= 250
-    img = np.where(red_pixels[..., None], np.asarray([0, 0, 0, 0], np.uint8), img)
+    mask = cv.inRange(img[..., :3], (0, 0, 250, 0), (0, 0, 255, 255))
+    img = cv.bitwise_and(img, img, mask=cv.bitwise_not(mask))
 
     import matplotlib.pyplot as plt
 
