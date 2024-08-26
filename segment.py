@@ -2,6 +2,7 @@ from typing import Optional
 
 import cv2 as cv
 import numpy as np
+import sys
 
 
 def segment_TB_pixels(
@@ -172,14 +173,17 @@ def calculate_enclosing_circle(gray_img: np.ndarray) -> tuple[int, int, int]:
 
 
 if __name__ == "__main__":
-    path = r"test_imgs/VCHECK_52_cornea.png"
+    if len(sys.argv) != 2:
+        print("Usage: python segment.py <path_to_image>")
+        exit(1)
+    path = sys.argv[1]
     img = cv.imread(path, cv.IMREAD_UNCHANGED)  # BGR or BGRA
     if img is None:
         print("Could not open or find the image:", path)
-        exit(0)
+        exit(1)
     gray_img = cv.cvtColor(
         img, cv.COLOR_BGRA2GRAY if img.shape[2] == 4 else cv.COLOR_BGR2GRAY
     )
     tb_positive_mask, viability = segment_TB_pixels(img, gray_img)
     # circles = calculate_enclosing_circle(gray_img)
-    print("Viability index:", viability)
+    print(path, "- viability Index:", viability)
